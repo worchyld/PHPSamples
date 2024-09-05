@@ -14,6 +14,15 @@ print square(5);
 print("\n");
 print_r(small_numbers());
 
+// key value pairs
+$details = [
+    'id' => 1,
+    'name' => 'Alex',
+    'email' => "123@fake.st",
+ ];
+
+ print_r($details);
+
 function increment($coins) {
     return $coins += 3;
 }
