@@ -1,0 +1,23 @@
+/* Recipe blog stylesheet
+Media: Screen
+Updated: 06 Sept 2024 */
+
+body {
+    font: 1.2rem Arial, Helvetic sans-serif;
+    margin: 1em;
+}
+
+p {
+    line-height: 1.2em;
+}
+
+article:after {
+    border: 1px solid #ccc;
+    margin-block: 1em;
+}
+
+article header h2 {
+    font-size: x-large;
+    font-weight: 300;
+    margin-bottom: 1rem;
+}
