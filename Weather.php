@@ -1,6 +1,7 @@
 <?php
-// Thur 05 Sep 24
-// Weather reading app
+// Simple weather reading app
+// @author: AD
+// @updated: 09 Sep 24
 
 /**
 1. Find out the IP address of the current user visiting the page.
@@ -23,39 +24,55 @@ https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=te
 5. Next, using the same script, create a text file which contains the retrieved weather information for this user.
 **/
 
-function getIPAddress($ipAddress = "63.139.12.38") {
+function displayError($errno, $errstr) {
+    echo "<code>Error: [$errno] $errstr</code>";
+}
+
+function getJSONFromIPAddress($ipAddress = "63.139.12.38") {    
     $url = "https://freeipapi.com/api/json/$ipAddress";
 
     $response = file_get_contents($url);
     $json = json_decode($response, true);
-    
+
     return $json;
 }
 
-function getLocationFromJSON($json) {
-
-    $longitude = $json['longitude'];
-    $latitude = $json['latitude'];
-    
+function getLocation($longitude, $latitude) {
     $url = "https://api.open-meteo.com/v1/forecast?latitude=". $latitude."&longitude=". $longitude . "&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m";
-    
-    $page = file_get_contents($url) or die("Error: Cannot connect to the API");
+
+    //$page = file_get_contents($url) or die("Error: Cannot connect to the API");
+    try {
+        // run your code here
+        $page = file_get_contents($url);
+    }
+    catch (exception $e) {
+        //code to handle the exception
+        trigger_error("Can't load URL", E_USER_WARNING);
+    }
+    finally {
+        //optional code that always runs
+    }
 
     return $page;
 }
 
-$json = getIPAddress("63.139.12.38");
-$result = getLocationFromJSON($json);
-
-saveToFile("weather.txt", $result);
-displayHTML($result);
 
 function saveToFile($file, $data) {
-    $file = fopen($file, "w") or die("Unable to open file!");
-    fwrite($file, $data);
-    fclose($file);
+    try {
+        // run your code here
+        $file = fopen($file, "w");
+        fwrite($file, $data);
+        fclose($file);
+    }
+    catch (exception $e) {
+        //code to handle the exception
+        trigger_error("File error -- ", E_USER_WARNING);
+    }
+    finally {
+        //optional code that always runs
+    }
 }
-    
+
 function displayHTML($result) {
     print "<!DOCTYPE html><html lang=\"en-gb\"><head><meta charset=\"UTF-8\"><title>Document</title>
 </head>
@@ -64,6 +81,13 @@ function displayHTML($result) {
 <section>". var_dump($result) . "</section>
 </body>
 </html>";
-
-    
 }
+
+// :main code
+set_error_handler("displayError");
+
+$jsonData = getJSONFromIPAddress("63.139.12.38");
+$result = getLocation($longitude = $jsonData['longitude'], $latitude = $jsonData['latitude']);
+
+//saveToFile("weather.txt", $result);
+displayHTML($result);
