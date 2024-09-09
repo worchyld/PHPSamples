@@ -48,18 +48,20 @@ readThisFile("quotes.txt");
 writeToFile("quotes.txt", "New line is entered");
 
 function readThisFile($filename = "quotes.txt") {
-    // open the file for reading
-    $file = fopen($filename, "r");
+    if (file_exists("quotes.txt")) {        
+        // open the file for reading
+        $file = fopen($filename, "r");
 
-    // read the file
-    $quotes = fread($file, filesize("quotes.txt"));
+        // read the file
+        $quotes = fread($file, filesize("quotes.txt"));
 
-    var_dump($quotes);
+        print_r($quotes);
 
-    // close the file
-    fclose($file);
+        // close the file
+        fclose($file);
 
-    return $quotes;
+        return $quotes;
+    }
 }
 
 function writeToFile($file, $contents) {
