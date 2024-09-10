@@ -51,4 +51,3 @@ catch (exception $e) {
     //code to handle the exception
     trigger_error("File error -- ", E_USER_WARNING);
 }
-   
