@@ -1,0 +1,41 @@
+enum Goods {
+    Food, Milk, Water, Paper, Steel, Luxuries
+}
+
+Product {
+    kind: Good.milk
+    curPrice: 10
+    lastPrice: 5
+    rareity: 1
+}
+
+Demand {
+    product: Milk
+    qty: 10
+    timeRemaining: 1
+    mulitplier: 1.0
+}
+
+Contract {
+    city: Hope
+    good: milk
+    qty: 3
+    willPay: 1.0
+    timeRemaining: 3
+    taken: true|false
+}
+
+City {
+    Offers: [Milk, Paper, Steel]
+    Demands: [Luxuries]
+    demandMultiplier: 1
+    cityGrowth: 0.0005
+}
+
+Message {
+    "Hope demands Milk and will pay double what it normally would for the next 3 days"
+}
+
+city1 = Hope 
+{ offers: x units of Milk at price: y }
+{ demands: 2 luxuries will pay z }
