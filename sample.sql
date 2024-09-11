@@ -1,15 +1,22 @@
-CREATE table if not exists "Customers" 
+DROP TABLE Users;
+
+CREATE TABLE if not exists "Users" 
 (
-    "ID" INTEGER PRIMARY KEY,
-    "Name" VARCHAR(255)
+    "ID" INTEGER,
+    "name" VARCHAR(255),
+    "password" VARCHAR(255)
 );
 
-CREATE table if not exists "Events"
+CREATE TABLE if not exists "Events"
 (
     "ID" integer primary key,
-    "Name" varchar(255)
+    "name" varchar(255)
 );
 
-INSERT INTO Customers (name) VALUES('Bud Powell');
+INSERT INTO Users (ID, name, password) VALUES(1, 'Bud Powell', "12345");
 
-SELECT * FROM Customers LIMIT 5;
+SELECT * FROM Users WHERE ID = 1;
+
+UPDATE Users SET password = 'abc' WHERE ID = 1;
+
+SELECT * FROM Users LIMIT 10;
