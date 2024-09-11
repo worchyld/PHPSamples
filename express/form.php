@@ -24,8 +24,19 @@
 </head>
 <body>
 
-<section>
-    <h2>Form</h2>
+<section id="blogEntries">
+    <h2>List of blog entries</h2>
+    <ul>
+        <li>
+            Author: { author }<br>
+            Title: { title }<br>
+            Content: { content }
+        </li>
+    </ul>
+</section>
+
+<section id="blogForm">
+    <h2>Add new blog entry</h2>
 
     <!-- Form using empty action -->
     <form action="/form-processing.php" method="post">
