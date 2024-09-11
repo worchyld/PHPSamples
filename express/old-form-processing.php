@@ -1,10 +1,9 @@
 <?php
 // Set proper content type for the response
 header('Content-Type: text/html; charset=UTF-8');
-
-// Enable error reporting for debugging (remove in production)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
+set_error_handler("displayError");
 error_reporting(E_ALL);
 
 function debugLog($message) {
@@ -29,9 +28,6 @@ function writeContentsToFile($contents) {
         throw new Exception("Failed to write to log file: $logFile");
     }
 }
-
-// set exception handler?
-set_error_handler("displayError");
 
 // force to uppercase
 $request_method = mb_strtoupper($_SERVER['REQUEST_METHOD']);
