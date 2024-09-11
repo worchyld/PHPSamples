@@ -3,7 +3,8 @@ DROP TABLE Users;
 CREATE TABLE if not exists "Users" 
 (
     "ID" INTEGER,
-    "name" VARCHAR(255)
+    "name" VARCHAR(255), 
+    "password" VARCHAR(255)
 );
 
 CREATE TABLE if not exists "Events"
