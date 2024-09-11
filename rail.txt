@@ -16,15 +16,6 @@ Demand {
     mulitplier: 1.0
 }
 
-Contract {
-    city: Hope
-    good: milk
-    qty: 3
-    willPay: 1.0
-    timeRemaining: 3
-    taken: true|false
-}
-
 City {
     Offers: [Milk, Paper, Steel]
     Demands: [Luxuries]
@@ -39,3 +30,59 @@ Message {
 city1 = Hope 
 { offers: x units of Milk at price: y }
 { demands: 2 luxuries will pay z }
+
+----------
+
+typescript:
+
+// Enums for common types
+enum GoodType {
+  Food,
+  Water,
+  Cloth,
+  Metal,
+  Luxuries,
+  // ... other types of goods
+}
+
+// Basic Good model
+interface Good {
+  type: GoodType;
+  name: string;
+  basePrice: number;
+}
+
+// Demand model
+interface Demand {
+  good: GoodType;
+  quantity: number;
+  priceMultiplier: number;
+}
+
+// City model
+interface City {
+  name: string;
+  availableGoods: Good[];
+  demands: Demand[];
+}
+
+// Player model
+interface Player {
+  name: string;
+  money: number;
+  inventory: InventoryItem[];
+  currentCity: City;
+}
+
+// Inventory item (for player's inventory)
+interface InventoryItem {
+  good: Good;
+  quantity: number;
+}
+
+// Game state model
+interface GameState {
+  player: Player;
+  cities: City[];
+  currentTurn: number;
+}
