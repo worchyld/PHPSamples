@@ -6,7 +6,7 @@ ini_set('display_startup_errors', 1);
 set_error_handler("logError");
 error_reporting(E_ALL);
 
-$formProcessingPage = "form-process.php";
+$formProcessingPage = "process-blog.php";
 
 function logError($errno, $errstr) {
     //echo "<code">Error: [$errno] $errstr</code>";
@@ -28,20 +28,23 @@ function connectToDB() {
         // create table if it does not exist
         $sql = "CREATE TABLE IF NOT EXISTS blog (
             ID INTEGER PRIMARY KEY,
+            title VARCHAR(255),
             author VARCHAR(255),
             content TEXT
         )";
         $conn->exec($sql);    
 
         // Get rows from db
-        $sql = "SELECT * FROM blog LIMIT 1";
+        $sql = "SELECT * FROM blog";
         $result = $conn->query($sql);
-        $rows = $result->fetchAll(PDO::FETCH_ASSOC);        
+        $rows = $result->fetchAll(PDO::FETCH_ASSOC);
+        $conn = null;
+        return $rows;
     } catch (PDOException $e) {
         echo "Connection failed: " . $e->getMessage();
         echo $e->intl_get_error_message;
+        return []; // empty array
     }
-    return $rows;    
 }
 
 $rows = connectToDB();
@@ -74,12 +77,27 @@ $rows = connectToDB();
 
 <section id="blogEntries">
     <h2>List of existing blog entries</h2>
-    <ul>
-        <? foreach ($rows as $record): ?>
-            Author: { <?=$record['author'];?> }<br>
-            Title: { <?=$record['title'];?> }<br>
-            Content: { <?=$record['content'];?> }
-        <? endforeach; ?>
+    <p>Entries found: <?=count($rows);?></p>
+
+    <?php
+    if ((count($rows) == 0) || ($rows == NULL)) {
+        print("<p>No blog articles yet</p>");
+    } else {
+        foreach ($rows as $record):
+            //var_dump($record);
+            if (is_array($record)) {?>
+                <li>
+                Author: { <?=htmlspecialchars($record['author']);?> }<br>
+                Title: { <?=htmlspecialchars($record['title']);?> }<br>
+                Content: { <?=htmlspecialchars($record['content']);?> }
+                </li>
+                <?php
+            }
+            else {
+                print "<p>Records are not an array</p>";
+            }
+        endforeach;
+    } // end if ?>
     </ul>
 </section>
 
