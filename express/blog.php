@@ -9,7 +9,6 @@ error_reporting(E_ALL);
 $formProcessingPage = "process-blog.php";
 
 function logError($errno, $errstr) {
-    //echo "<code">Error: [$errno] $errstr</code>";
     $message =  "Error: ". ($errno) . ", " . ($errstr);
     file_put_contents('debug.log', $message, FILE_APPEND);
 }
@@ -30,20 +29,21 @@ function connectToDB() {
             ID INTEGER PRIMARY KEY,
             title VARCHAR(255),
             author VARCHAR(255),
-            content TEXT
+            content TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )";
-        $conn->exec($sql);    
+        $conn->exec($sql);
 
         // Get rows from db
         $sql = "SELECT * FROM blog";
         $result = $conn->query($sql);
         $rows = $result->fetchAll(PDO::FETCH_ASSOC);
-        $conn = null;
+        
         return $rows;
     } catch (PDOException $e) {
-        echo "Connection failed: " . $e->getMessage();
-        echo $e->intl_get_error_message;
-        return []; // empty array
+        $message = "Connection failed: " . $e->getMessage() . " -- (". $e->intl_get_error_message  .")\n";
+        logError(0, $e->getMessage());
+        return [];
     }
 }
 
@@ -77,7 +77,7 @@ $rows = connectToDB();
 
 <section id="blogEntries">
     <h2>List of existing blog entries</h2>
-    <p>Entries found: <?=count($rows);?></p>
+    <p>Found: <?=count($rows);?> blog entries</p>
 
     <?php
     if ((count($rows) == 0) || ($rows == NULL)) {
@@ -85,11 +85,14 @@ $rows = connectToDB();
     } else {
         foreach ($rows as $record):
             //var_dump($record);
+            // force check if its an array
             if (is_array($record)) {?>
                 <li>
+                    ID: { <?=htmlspecialchars(intval($record['ID']));?>}
                 Author: { <?=htmlspecialchars($record['author']);?> }<br>
                 Title: { <?=htmlspecialchars($record['title']);?> }<br>
                 Content: { <?=htmlspecialchars($record['content']);?> }
+                <a href="delete-blog-entry.php?id=<?=$record['ID']?>">[ Delete ]</a>
                 </li>
                 <?php
             }
@@ -106,8 +109,7 @@ $rows = connectToDB();
 <section id="blogForm">
     <h2>Add new blog entry</h2>
 
-    <!-- Form using empty action -->
-     <!-- form-processing.php -->
+    <!-- Form using POST -->
     <form action="/<?=$formProcessingPage;?>" method="post">
         <p></p>
             <label for="blogAuthor">Author</label><br>

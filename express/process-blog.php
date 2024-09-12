@@ -1,17 +1,17 @@
 <?php
-// Process the form, redirect back to blog.php
+// Turn off output buffering
+ob_start();
+header('Content-Type: text/php; charset=UTF-8');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 function logError($message) {
-    // $message = 'PHP script executed at ' . date('Y-m-d H:i:s') . "\n"
-    file_put_contents('debug.log', date('Y-m-d H:i:s') . " - " . $message . "\n", FILE_APPEND);
-    // $trace = debug_backtrace();
-    // $file = $trace[0]['file'];
-    // $line = $trace[0]['line'];
-    // $message = date('Y-m-d H:i:s') . "' - Error: " . $errno . ", " . $errstr . " in " . $file . " on line " . $line . "\n";
-    // file_put_contents('debug.log', $message, FILE_APPEND);    
+    if (is_array($message)) {
+        $message = json_encode($message);
+    }
+    $fullMsg = date('Y-m-d H:i:s') . " - " . $message . "\n";
+    file_put_contents("debug.log", $fullMsg, FILE_APPEND);
 }
 
 // Function to sanitize input
@@ -20,7 +20,7 @@ function sanitizeInput($input) {
 }
 
 // force to uppercase
-$request_method = mb_strtoupper($_SERVER['REQUEST_METHOD']);
+$request_method = mb_strtoupper(sanitizeInput($_SERVER['REQUEST_METHOD']));
 
 try {
     if ($request_method !== 'POST') {
@@ -57,12 +57,19 @@ try {
 
     logError("\nSaved entry to database");
     
-    header("Location: blog.php");
+    $url = "http://localhost:3000/";
+    ob_clean();
+    header("Location: " . $url . "blog.php");
     exit();
 }
 catch (exception $e) {
     // Log the error
     logError($e->getMessage());
-    header("Location: blog.php");
+    logError($e->getTraceAsString());
+
+    $url = "http://localhost:3000/";
+    ob_clean();
+    header("Location: " . $url . "blog.php");
     exit();
 }
+ob_end_flush();
