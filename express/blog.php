@@ -117,14 +117,14 @@ $rows = connectToDB();
             if (is_array($record)) {?>
                 <li>
                     ID: { <?=htmlspecialchars(intval($record['ID']));?>}
-                Author: { <?=htmlspecialchars($record['author']);?> }<br>
-                Title: { <?=htmlspecialchars($record['title']);?> }<br>
-                Content: { <?=htmlspecialchars($record['content']);?> }<br>
-                <?php
-                $createdDate = new DateTime($record['created_at']);
-                ?>
-                Date: <?=$createdDate->format('d-M-Y h:m:s');?> 
-                <a href="delete-blog.php?id=<?=urlencode($record['ID']);?>" onclick="return confirm('Are you sure you want to delete this entry?');">[Delete]</a>
+                    Author: { <?=htmlspecialchars($record['author']);?> }<br>
+                    Title: { <?=htmlspecialchars($record['title']);?> }<br>
+                    Content: { <?=htmlspecialchars($record['content']);?> }<br>
+                    <?php
+                    $createdDate = new DateTime($record['created_at']);
+                    ?>
+                    Date: <?=$createdDate->format('d-M-Y h:m:s');?> 
+                    <a href="delete-blog.php?id=<?=urlencode($record['ID']);?>" onclick="return confirm('Are you sure you want to delete this entry?');">[Delete]</a>
                 </li>
                 <?php
             }
