@@ -1,6 +1,5 @@
 <?php
 session_start();
-ini_set('session.gc_maxlifetime', 3600);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 header('Content-Type: text/html; charset=UTF-8');
