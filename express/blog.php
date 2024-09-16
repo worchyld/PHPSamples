@@ -1,10 +1,10 @@
 <?php
 // Enable error reporting for debugging (remove in production)
+ini_set('session.gc_maxlifetime', 3600);
+session_set_cookie_params(3600);
 session_start();
-//ini_set('session.gc_maxlifetime', 3600);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-header('Content-Type: text/html; charset=UTF-8');
 set_error_handler("logError");
 error_reporting(E_ALL);
 
@@ -87,24 +87,23 @@ $rows = connectToDB();
 
 <section id="profile">
     <?php
-    $hideBlogPage = false;
-
+    $showBlog = true;
     if (isset($_SESSION['username'])) {
         echo "<h2>Profile</h2>";
         echo "<p>Welcome, " . htmlspecialchars($_SESSION['username']) . "!</p>";
         echo "<p><a href=\"logout.php\">Logout</a></p>";
     } else {
+        //$showBlog = false;
         echo "<p>You are not logged in</p>";
         echo "<p><a href=\"login.php\">Login</a></p>";
     }
     print "SESSION VARS ---<br>";
     print "Session ID: " . session_id() . "<br>";
-    print "<p>" .var_dump($_SESSION) . "</p>";
-    print "<hr><br>";
-    print_r( phpinfo() );
+    print "<p>" .var_dump($_SESSION) . "</p>";    
     ?>
 </section>
 
+<?php if ($showBlog == true): ?>
 <section id="blogEntries">
     <h2>List of existing blog entries</h2>
     <p>Found: <?=count($rows);?> blog entries</p>
@@ -161,6 +160,8 @@ $rows = connectToDB();
         <input class="submit" type="submit" value="Post blog">
     </form>
 </section>
+
+<?php endif; ?>
 
 </body>
 </html>
