@@ -35,7 +35,7 @@ function connectToDB() {
         $conn->exec($sql);
 
         // Get rows from db
-        $sql = "SELECT * FROM blog";
+        $sql = "SELECT * FROM blog ORDER BY created_AT DESC LIMIT 50";
         $result = $conn->query($sql);
         $rows = $result->fetchAll(PDO::FETCH_ASSOC);
         
@@ -91,7 +91,8 @@ $rows = connectToDB();
                     ID: { <?=htmlspecialchars(intval($record['ID']));?>}
                 Author: { <?=htmlspecialchars($record['author']);?> }<br>
                 Title: { <?=htmlspecialchars($record['title']);?> }<br>
-                Content: { <?=htmlspecialchars($record['content']);?> }
+                Content: { <?=htmlspecialchars($record['content']);?> }<br>
+                Date: { <?=htmlspecialchars($record['created_at']);?> }
                 <a href="delete-blog-entry.php?id=<?=$record['ID']?>">[ Delete ]</a>
                 </li>
                 <?php

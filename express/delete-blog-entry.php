@@ -1,4 +1,6 @@
 <?php
+ob_start();
+header('Content-Type: text/php; charset=UTF-8');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -45,4 +47,6 @@ try {
     header("Location: blog.php");
     exit();
 }
+
+ob_end_flush();
 ?>

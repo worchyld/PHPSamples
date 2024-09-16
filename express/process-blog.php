@@ -46,13 +46,14 @@ try {
     $conn = new PDO("sqlite:blog.db", '', '', $options);
 
     // Prepare the SQL statement
-    $sql = 'INSERT into blog (author, title, content) VALUES (:author, :title, :content)';
+    $sql = 'INSERT into blog (author, title, content, created_at) VALUES (:author, :title, :content, :date)';
     $preparedStatement = $conn->prepare($sql);
 
     $preparedStatement->execute([
         ':author' => $sanitizedInput['blogAuthor'],
         ':title' => $sanitizedInput['blogTitle'],
-        ':content' => $sanitizedInput['blogContent']
+        ':content' => $sanitizedInput['blogContent'],
+        ':date' => date('Y-m-d H:i:s')
     ]);
 
     logError("\nSaved entry to database");
