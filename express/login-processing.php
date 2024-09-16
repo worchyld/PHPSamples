@@ -1,6 +1,5 @@
 <?php
 session_start();
-header('Content-Type: text/php; charset=UTF-8');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -43,8 +42,13 @@ try {
     if ($username == 'admin' && $password == 'admin') {
         
         $_SESSION['username'] = $username;
+        session_write_close();
+        logError("Session set: " . json_encode($_SESSION)); // Log session data
+        
+        echo "Session ID: " . session_id() . "<br>";
+        var_dump($_SESSION);
 
-        header('Location: blog.php');
+        //header('Location: blog.php');
         exit();
     }
 } catch (Exception $e) {

@@ -1,10 +1,10 @@
 <?php
 // Enable error reporting for debugging (remove in production)
 session_start();
-ini_set('session.gc_maxlifetime', 3600);
-header('Content-Type: text/html; charset=UTF-8');
+//ini_set('session.gc_maxlifetime', 3600);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
+header('Content-Type: text/html; charset=UTF-8');
 set_error_handler("logError");
 error_reporting(E_ALL);
 
@@ -98,7 +98,10 @@ $rows = connectToDB();
         echo "<p><a href=\"login.php\">Login</a></p>";
     }
     print "SESSION VARS ---<br>";
+    print "Session ID: " . session_id() . "<br>";
     print "<p>" .var_dump($_SESSION) . "</p>";
+    print "<hr><br>";
+    print_r( phpinfo() );
     ?>
 </section>
 
@@ -118,7 +121,6 @@ $rows = connectToDB();
                 Author: { <?=htmlspecialchars($record['author']);?> }<br>
                 Title: { <?=htmlspecialchars($record['title']);?> }<br>
                 Content: { <?=htmlspecialchars($record['content']);?> }<br>
-
                 <?php
                 $createdDate = new DateTime($record['created_at']);
                 ?>
