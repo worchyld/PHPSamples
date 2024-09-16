@@ -4,10 +4,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-function logError($message) {
-    $fullMsg = date('Y-m-d H:i:s') . " - " . $message . "\n";
-    file_put_contents("debug.log", $fullMsg, FILE_APPEND);
-}
+include_once("functions.inc.php");
+set_error_handler("logError");
 
 try {
     // Check if an ID was provided

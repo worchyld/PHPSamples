@@ -5,51 +5,14 @@ session_set_cookie_params(3600);
 session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-set_error_handler("logError");
 error_reporting(E_ALL);
 
 $formProcessingPage = "process-blog.php";
 
-function logError($errno, $errstr) {
-    $message =  "Error: ". ($errno) . ", " . ($errstr);
-    file_put_contents('debug.log', $message, FILE_APPEND);
-}
+include_once("functions.inc.php");
+set_error_handler("logError");
 
-function connectToDB() {
-    // Try to connect to db
-    // on fail, dump the error to $content
-    // on success: dump the expected fields to $content
-    try {
-        $options = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_EMULATE_PREPARES => false
-        ];
-        $conn = new PDO("sqlite:blog.db", '','', $options);
-        
-        // create table if it does not exist
-        $sql = "CREATE TABLE IF NOT EXISTS blog (
-            ID INTEGER PRIMARY KEY,
-            title VARCHAR(255),
-            author VARCHAR(255),
-            content TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )";
-        $conn->exec($sql);
-
-        // Get rows from db
-        $sql = "SELECT * FROM blog ORDER BY created_AT DESC LIMIT 50";
-        $result = $conn->query($sql);
-        $rows = $result->fetchAll(PDO::FETCH_ASSOC);
-        
-        return $rows;
-    } catch (PDOException $e) {
-        $message = "Connection failed: " . $e->getMessage() . " -- (". $e->intl_get_error_message  .")\n";
-        logError(0, $e->getMessage());
-        return [];
-    }
-}
-
-$rows = connectToDB();
+$rows = getBlogEntries();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -124,7 +87,7 @@ $rows = connectToDB();
                     $createdDate = new DateTime($record['created_at']);
                     ?>
                     Date: <?=$createdDate->format('d-M-Y h:m:s');?> 
-                    <a href="delete-blog.php?id=<?=urlencode($record['ID']);?>" onclick="return confirm('Are you sure you want to delete this entry?');">[Delete]</a>
+                    <a href="delete-blog-entry.php?id=<?=urlencode($record['ID']);?>" onclick="return confirm('Are you sure you want to delete this entry?');">[Delete]</a>
                 </li>
                 <?php
             }

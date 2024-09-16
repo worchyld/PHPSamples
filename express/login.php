@@ -6,18 +6,7 @@ header('Content-Type: text/html; charset=UTF-8');
 set_error_handler("logError");
 error_reporting(E_ALL);
 
-function logError($message) {
-    if (is_array($message)) {
-        $message = json_encode($message);
-    }
-    $fullMsg = date('Y-m-d H:i:s') . " - " . $message . "\n";
-    file_put_contents("debug.log", $fullMsg, FILE_APPEND);
-}
-
-// Function to sanitize input
-function sanitizeInput($input) {
-    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
-}
+include_once("functions.inc.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">

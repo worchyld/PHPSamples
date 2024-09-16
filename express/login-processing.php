@@ -4,24 +4,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-function logError($message) {
-    if (is_array($message)) {
-        $message = json_encode($message);
-    }
-    $fullMsg = date('Y-m-d H:i:s') . " - " . $message . "\n\n";
-    file_put_contents("debug.log", $fullMsg, FILE_APPEND);
-}
+include("functions.inc.php");
 
-function is_session_started()
-{
-    if (php_sapi_name() === 'cli')
-        return false;
-
-    if (version_compare(phpversion(), '5.4.0', '>='))
-        return session_status() === PHP_SESSION_ACTIVE;
-
-    return session_id() !== '';
-}
 if (!is_session_started()) {
     session_set_cookie_params([
         'lifetime' => 3600,
@@ -32,12 +16,6 @@ if (!is_session_started()) {
         'samesite' => 'Lax'
     ]);
     session_start();
-}
-
-
-// Function to sanitize input
-function sanitizeInput($input) {
-    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
 }
 
 // force to uppercase
@@ -71,7 +49,7 @@ try {
         echo "Session ID: " . session_id() . "<br>";
         var_dump($_SESSION);
 
-print "<p>Cookie params:</p>";
+        print "<p>Cookie params:</p>";
         $cookieParams = session_get_cookie_params();
         var_dump($cookieParams);
 
@@ -79,8 +57,6 @@ print "<p>Cookie params:</p>";
         exit();
     }
 } catch (Exception $e) {
-    //logError($e->getMessage());
-    //print $e->getMessage();    
     header('Location: login.php');
     exit();
 }
