@@ -1,7 +1,7 @@
 <?php
 // Enable error reporting for debugging (remove in production)
-header('Content-Type: text/html; charset=UTF-8');
 session_start();
+header('Content-Type: text/html; charset=UTF-8');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 set_error_handler("logError");
@@ -86,6 +86,8 @@ $rows = connectToDB();
 
 <section id="profile">
     <?php
+    $hideBlogPage = false;
+
     if (isset($_SESSION['username'])) {
         echo "<h2>Profile</h2>";
         echo "<p>Welcome, " . htmlspecialchars($_SESSION['username']) . "!</p>";
@@ -94,6 +96,8 @@ $rows = connectToDB();
         echo "<p>You are not logged in</p>";
         echo "<p><a href=\"login.php\">Login</a></p>";
     }
+    print "SESSION VARS ---<br>";
+    print "<p>" .var_dump($_SESSION) . "</p>";
     ?>
 </section>
 
@@ -106,7 +110,6 @@ $rows = connectToDB();
         print("<p>No blog articles yet</p>");
     } else {
         foreach ($rows as $record):
-            //var_dump($record);
             // force check if its an array
             if (is_array($record)) {?>
                 <li>

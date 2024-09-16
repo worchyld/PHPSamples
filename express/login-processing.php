@@ -1,5 +1,4 @@
 <?php
-ob_start();
 session_start();
 header('Content-Type: text/php; charset=UTF-8');
 ini_set('display_errors', 1);
@@ -41,13 +40,11 @@ try {
     $username = $sanitizedInput['username'];
     $password = $sanitizedInput['password'];
     
-    if ($username === 'admin' && $password === 'admin') {
+    if ($username == 'admin' && $password == 'admin') {
         
-        $_SERVER['username'] = $username;
-
-        print "Logged in -- <a href=\"blog.php\">Blog</a>";
-
-        header('Location: blog.php');
+        $_SESSION['username'] = $username;
+  
+        var_dump($_SESSION);
         exit();
     }
 } catch (Exception $e) {
@@ -56,5 +53,3 @@ try {
     header('Location: login.php');
     exit();
 }
-
-ob_end_flush();
