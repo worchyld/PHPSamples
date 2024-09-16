@@ -1,11 +1,11 @@
 <?php
-ob_start();
-header('Content-Type: text/html; charset=UTF-8');
+session_start();
+ini_set('session.gc_maxlifetime', 3600);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
+header('Content-Type: text/html; charset=UTF-8');
 set_error_handler("logError");
 error_reporting(E_ALL);
-
 
 function logError($message) {
     if (is_array($message)) {
@@ -52,4 +52,3 @@ function sanitizeInput($input) {
     </form>
 </body>
 </html>
-<?php ob_end_flush(); ?>

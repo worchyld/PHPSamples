@@ -1,6 +1,7 @@
 <?php
 // Enable error reporting for debugging (remove in production)
 session_start();
+ini_set('session.gc_maxlifetime', 3600);
 header('Content-Type: text/html; charset=UTF-8');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);

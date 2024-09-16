@@ -43,8 +43,8 @@ try {
     if ($username == 'admin' && $password == 'admin') {
         
         $_SESSION['username'] = $username;
-  
-        var_dump($_SESSION);
+
+        header('Location: blog.php');
         exit();
     }
 } catch (Exception $e) {
