@@ -30,7 +30,7 @@ try {
     ]);
 
     // Check if a row was actually deleted
-    if ($stmt->rowCount() > 0) {
+    if ($statement->rowCount() > 0) {
         logError("Blog entry with ID $id deleted successfully");
         $message = "Blog entry deleted successfully";
     } else {

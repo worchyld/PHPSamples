@@ -1,6 +1,7 @@
 <?php
 // Enable error reporting for debugging (remove in production)
 header('Content-Type: text/html; charset=UTF-8');
+session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 set_error_handler("logError");
@@ -71,9 +72,30 @@ $rows = connectToDB();
             font-weight:900;
             padding:1em;
         }
+        section#profile {
+            border: 1px solid blue;
+            padding: 1rem;
+        }
+        section#blogEntries {
+            margin-top:1rem;
+            border-top:1px solid #ccc;
+        }
     </style>
 </head>
 <body>
+
+<section id="profile">
+    <?php
+    if (isset($_SESSION['username'])) {
+        echo "<h2>Profile</h2>";
+        echo "<p>Welcome, " . htmlspecialchars($_SESSION['username']) . "!</p>";
+        echo "<p><a href=\"logout.php\">Logout</a></p>";
+    } else {
+        echo "<p>You are not logged in</p>";
+        echo "<p><a href=\"login.php\">Login</a></p>";
+    }
+    ?>
+</section>
 
 <section id="blogEntries">
     <h2>List of existing blog entries</h2>
@@ -92,13 +114,17 @@ $rows = connectToDB();
                 Author: { <?=htmlspecialchars($record['author']);?> }<br>
                 Title: { <?=htmlspecialchars($record['title']);?> }<br>
                 Content: { <?=htmlspecialchars($record['content']);?> }<br>
-                Date: { <?=htmlspecialchars($record['created_at']);?> }
-                <a href="delete-blog-entry.php?id=<?=$record['ID']?>">[ Delete ]</a>
+
+                <?php
+                $createdDate = new DateTime($record['created_at']);
+                ?>
+                Date: <?=$createdDate->format('d-M-Y h:m:s');?> 
+                <a href="delete-blog.php?id=<?=urlencode($record['ID']);?>" onclick="return confirm('Are you sure you want to delete this entry?');">[Delete]</a>
                 </li>
                 <?php
             }
             else {
-                print "<p>Records are not an array</p>";
+                print "<p>Record are not an array</p>";
             }
         endforeach;
     } // end if ?>
