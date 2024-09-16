@@ -1,5 +1,6 @@
 <?php
 ini_set('session.gc_maxlifetime', 3600); // 1 hour
+//ini_set('session.save_path', $_SERVER['DOCUMENT_ROOT'] . '/sessions');
 session_set_cookie_params(3600);
 
 session_start();
