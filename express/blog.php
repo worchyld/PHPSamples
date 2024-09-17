@@ -1,8 +1,4 @@
 <?php
-// Enable error reporting for debugging (remove in production)
-ini_set('session.gc_maxlifetime', 3600);
-session_set_cookie_params(3600);
-session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -11,6 +7,18 @@ $formProcessingPage = "process-blog.php";
 
 include_once("functions.inc.php");
 set_error_handler("logError");
+
+if (!is_session_started()) {
+    session_set_cookie_params([
+        'lifetime' => 3600,
+        'path' => '/sessions/',
+        'domain' => 'localhost',
+        'secure' => false,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    session_start();
+}
 
 $rows = getBlogEntries();
 ?>
@@ -60,9 +68,19 @@ $rows = getBlogEntries();
         echo "<p>You are not logged in</p>";
         echo "<p><a href=\"login.php\">Login</a></p>";
     }
-    print "SESSION VARS ---<br>";
-    print "Session ID: " . session_id() . "<br>";
-    print "<p>" .var_dump($_SESSION) . "</p>";    
+    
+    print "<p>Cookie params:</p>";
+    $cookieParams = session_get_cookie_params();
+
+    print "<p>Session ID: " . session_id() . "</p>";
+    print "<p>Session Name: " . session_name() . "</p>";
+    print "<p>Session Save Path: " . session_save_path() . "</p>";
+    print "<p>Session Status: " . session_status() . "</p>";
+    print "<p>Session Started: " . (isset($_SESSION['username']) ? 'Yes' : 'No') . "</p>";
+    print "<p>Session Data: " . json_encode($_SESSION) . "</p>";
+    print "<p>Cookie Params: " . json_encode($cookieParams) . "</p>";
+
+    print ("<hr>");    
     ?>
 </section>
 

@@ -1,5 +1,4 @@
 <?php
-session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -51,8 +50,19 @@ try {
 
         print "<p>Cookie params:</p>";
         $cookieParams = session_get_cookie_params();
-        var_dump($cookieParams);
 
+
+        print "<p>Session ID: " . session_id() . "</p>";
+        print "<p>Session Name: " . session_name() . "</p>";
+        print "<p>Session Save Path: " . session_save_path() . "</p>";
+        print "<p>Session Status: " . session_status() . "</p>";
+        print "<p>Session Started: " . (isset($_SESSION['username']) ? 'Yes' : 'No') . "</p>";
+        print "<p>Session Data: " . json_encode($_SESSION) . "</p>";
+        print "<p>Cookie Params: " . json_encode($cookieParams) . "</p>";
+
+        print ("<hr>");
+        print "<a href='blog.php'>Blog</a>";
+        
         //header('Location: blog.php');
         exit();
     }
