@@ -74,12 +74,13 @@ function getBlogEntries() {
             title VARCHAR(255),
             author VARCHAR(255),
             content TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )";
         $conn->exec($sql);
 
         // Get rows from db
-        $sql = "SELECT * FROM blog ORDER BY created_AT DESC LIMIT 50";
+        $sql = "SELECT * FROM blog ORDER BY created_at DESC LIMIT 50";
         $result = $conn->query($sql);
         $rows = $result->fetchAll(PDO::FETCH_ASSOC);
         
@@ -97,11 +98,12 @@ function updateBlogEntry($sanitizedInput) {
     $conn = connectToDB();
     
     // Prepare the SQL statement
-    $sql = 'UPDATE blog SET author = :author, title = :title, content = :content WHERE ID = :id';
+    $sql = 'UPDATE blog SET author = :author, title = :title, content = :content, updated_at = :updatedAt WHERE ID = :id';
     $stmt = $conn->prepare($sql);
 
     $stmt->execute(
         [
+            ':updatedAt' => date('Y-m-d H:i:s'),
             ':author' => $sanitizedInput['blogAuthor'],
             ':title' => $sanitizedInput['blogTitle'],
             ':content' => $sanitizedInput['blogContent'],
@@ -117,7 +119,7 @@ function insertBlogEntry($sanitizedInput) {
     $conn = connectToDB();
     
     // Prepare the SQL statement
-    $sql = 'INSERT into blog (author, title, content, created_at) VALUES (:author, :title, :content, :date)';
+    $sql = 'INSERT into blog (author, title, content, created_at, updated_at) VALUES (:author, :title, :content, :date, :updated_at)';
     $stmt = $conn->prepare($sql);
 
     $stmt->execute(
@@ -125,7 +127,8 @@ function insertBlogEntry($sanitizedInput) {
             ':author' => $sanitizedInput['blogAuthor'],
             ':title' => $sanitizedInput['blogTitle'],
             ':content' => $sanitizedInput['blogContent'],
-            ':date' => date('Y-m-d H:i:s')
+            ':date' => date('Y-m-d H:i:s'),
+            ':updatedAt' => date('Y-m-d H:i:s')
         ]
     );
 
