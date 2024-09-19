@@ -6,18 +6,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-function logError($message) {
-    if (is_array($message)) {
-        $message = json_encode($message);
-    }
-    $fullMsg = date('Y-m-d H:i:s') . " - " . $message . "\n";
-    file_put_contents("debug.log", $fullMsg, FILE_APPEND);
-}
-
-// Function to sanitize input
-function sanitizeInput($input) {
-    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
-}
+require_once 'functions.inc.php';
 
 // force to uppercase
 $request_method = mb_strtoupper(sanitizeInput($_SERVER['REQUEST_METHOD']));
@@ -32,31 +21,27 @@ try {
     $sanitizedInput = [];
 
     foreach ($requiredFields as $field) {
-     if (!isset($_POST[$field]) || empty($_POST[$field])) {
-         throw new Exception("Missing required field: $field");
-        }
-        $sanitizedInput[$field] = sanitizeInput($_POST[$field]);
+        if (!isset($_POST[$field]) || empty($_POST[$field])) {
+            throw new Exception("Missing required field: $field");
+           }
+           $sanitizedInput[$field] = sanitizeInput($_POST[$field]);
+       }
+
+    // Check if an edit request
+    if (isset($_POST['editId'])) {
+        // Update the record
+        $sanitizedInput['editId'] = intval($_POST['editId']);
+        $rowsAffected = updateBlogEntry($sanitizedInput);
+    } else {
+        // Insert the record
+        $rowsAffected = insertBlogEntry($sanitizedInput);
     }
-
-    // Connect to the database
-    $options = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_EMULATE_PREPARES => false
-    ];
-    $conn = new PDO("sqlite:blog.db", '', '', $options);
-
-    // Prepare the SQL statement
-    $sql = 'INSERT into blog (author, title, content, created_at) VALUES (:author, :title, :content, :date)';
-    $preparedStatement = $conn->prepare($sql);
-
-    $preparedStatement->execute([
-        ':author' => $sanitizedInput['blogAuthor'],
-        ':title' => $sanitizedInput['blogTitle'],
-        ':content' => $sanitizedInput['blogContent'],
-        ':date' => date('Y-m-d H:i:s')
-    ]);
-
-    logError("\nSaved entry to database");
+    
+    if ($rowsAffected > 0) {
+        logError("\nSaved entry to database");
+    } else {
+        throw new Exception("Failed to save entry to database");
+    }
     
     $url = "http://localhost:3000/";
     ob_clean();

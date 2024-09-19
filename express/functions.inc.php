@@ -24,16 +24,44 @@ function is_session_started() {
     return session_id() !== '';
 }
 
+function connectToDB() {
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_EMULATE_PREPARES => false
+    ];
+    $conn = new PDO("sqlite:blog.db", '', '', $options);
+
+    return $conn;
+}
+
+
+function getBlogEntry($id) {
+    // Try to connect to db
+    // on fail, dump the error to $content
+    // on success: dump the expected fields to $content
+    try {
+        $conn = connectToDB();
+
+        // Get rows from db
+        $sql = "SELECT * FROM blog WHERE ID = :id LIMIT 1";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row;
+    } catch (PDOException $e) {
+        $message = "Connection failed: " . $e->getMessage() . " -- (". $e->intl_get_error_message  .")\n";
+        logError(0, $e->getMessage());
+        return [];
+    }
+}
+
 function getBlogEntries() {
     // Try to connect to db
     // on fail, dump the error to $content
     // on success: dump the expected fields to $content
     try {
-        $options = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_EMULATE_PREPARES => false
-        ];
-        $conn = new PDO("sqlite:blog.db", '','', $options);
+        $conn = connectToDB();
         
         // create table if it does not exist
         $sql = "CREATE TABLE IF NOT EXISTS blog (
@@ -50,10 +78,51 @@ function getBlogEntries() {
         $result = $conn->query($sql);
         $rows = $result->fetchAll(PDO::FETCH_ASSOC);
         
+
         return $rows;
     } catch (PDOException $e) {
         $message = "Connection failed: " . $e->getMessage() . " -- (". $e->intl_get_error_message  .")\n";
         logError(0, $e->getMessage());
         return [];
     }
+}
+
+function updateBlogEntry($sanitizedInput) {
+    // Connect to the database
+    $conn = connectToDB();
+    
+    // Prepare the SQL statement
+    $sql = 'UPDATE blog SET author = :author, title = :title, content = :content WHERE ID = :id';
+    $stmt = $conn->prepare($sql);
+
+    $stmt->execute(
+        [
+            ':author' => $sanitizedInput['blogAuthor'],
+            ':title' => $sanitizedInput['blogTitle'],
+            ':content' => $sanitizedInput['blogContent'],
+            ':id' => $sanitizedInput['editId']
+        ]
+        );
+ 
+    return $stmt->rowCount();
+}
+
+function insertBlogEntry($sanitizedInput) {
+    // Connect to the database
+    $conn = connectToDB();
+    
+    // Prepare the SQL statement
+    $sql = 'INSERT into blog (author, title, content, created_at) VALUES (:author, :title, :content, :date)';
+    $stmt = $conn->prepare($sql);
+
+    $stmt->execute(
+        [
+            ':author' => $sanitizedInput['blogAuthor'],
+            ':title' => $sanitizedInput['blogTitle'],
+            ':content' => $sanitizedInput['blogContent'],
+            ':date' => date('Y-m-d H:i:s')
+        ]
+    );
+
+    return $stmt->rowCount();
 }

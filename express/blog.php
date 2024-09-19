@@ -21,6 +21,22 @@ if (!is_session_started()) {
 }
 
 $rows = getBlogEntries();
+
+// Are we editing the blog entry?
+$editMode = false;
+$editEntry = null;
+
+$request_method = mb_strtoupper(sanitizeInput($_SERVER['REQUEST_METHOD']));
+
+if ( $request_method == 'GET' ) {
+    if ( (isset($_GET['edit']) && 
+        (is_numeric($_GET['edit'])) )
+        ) {
+        $editMode = true;
+        $editID = intval( trim($_GET['edit']) );
+        $editEntry = getBlogEntry($editID);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,11 +68,14 @@ $rows = getBlogEntries();
             margin-top:1rem;
             border-top:1px solid #ccc;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-<section id="profile">
+<section id="profile" class="toggle">
     <?php
     $showBlog = true;
     if (isset($_SESSION['username'])) {
@@ -69,9 +88,8 @@ $rows = getBlogEntries();
         echo "<p><a href=\"login.php\">Login</a></p>";
     }
     
-    print "<p>Cookie params:</p>";
+    print "<h3>DEBUG:</h3>";
     $cookieParams = session_get_cookie_params();
-
     print "<p>Session ID: " . session_id() . "</p>";
     print "<p>Session Name: " . session_name() . "</p>";
     print "<p>Session Save Path: " . session_save_path() . "</p>";
@@ -84,65 +102,97 @@ $rows = getBlogEntries();
     ?>
 </section>
 
+<p><a href="#" id="toggleProfile">Show console log</a></p>
+
 <?php if ($showBlog == true): ?>
 <section id="blogEntries">
-    <h2>List of existing blog entries</h2>
-    <p>Found: <?=count($rows);?> blog entries</p>
+    <h2>Blog entries</h2>
+    <p>Total entries: <?=count($rows);?></p>
 
     <?php
-    if ((count($rows) == 0) || ($rows == NULL)) {
-        print("<p>No blog articles yet</p>");
-    } else {
-        foreach ($rows as $record):
-            // force check if its an array
-            if (is_array($record)) {?>
-                <li>
-                    ID: { <?=htmlspecialchars(intval($record['ID']));?>}
-                    Author: { <?=htmlspecialchars($record['author']);?> }<br>
-                    Title: { <?=htmlspecialchars($record['title']);?> }<br>
-                    Content: { <?=htmlspecialchars($record['content']);?> }<br>
-                    <?php
-                    $createdDate = new DateTime($record['created_at']);
-                    ?>
-                    Date: <?=$createdDate->format('d-M-Y h:m:s');?> 
-                    <a href="delete-blog-entry.php?id=<?=urlencode($record['ID']);?>" onclick="return confirm('Are you sure you want to delete this entry?');">[Delete]</a>
+    if ((count($rows) == 0) || ($rows == NULL)):?>
+        <p>No blog articles yet</p>
+    <?php else: ?>
+        <ul class="blog-list">
+        <?php foreach ($rows as $record): ?>
+                <li class="blog-meta">
+                    <h3><?=htmlspecialchars($record['title']);?></h3>
+                    <p class="blog-meta">
+                        By <?=htmlspecialchars($record['author']);?> on 
+                        <?=(new DateTime($record['created_at']))->format('d-M-Y H:i:s');?>
+                    </p>
+                    <p class="blog-excerpt"><?=htmlspecialchars(substr($record['content'], 0, 100));?>...</p>
+                    <div class="blog-actions">
+                        <a href="?edit=<?=urlencode($record['ID']);?>">Edit</a>
+                        <a href="delete-blog-entry.php?id=<?=urlencode($record['ID']);?>" 
+                        onclick="return confirm('Confirm: Delete?');">Delete</a>
+                    </div>
                 </li>
                 <?php
-            }
-            else {
-                print "<p>Record are not an array</p>";
-            }
-        endforeach;
-    } // end if ?>
-    </ul>
+        endforeach;?>
+        </ul>
+        <?php
+    endif; ?>
+    
 </section>
 
 <hr>
 
+<?php
+if ($editMode == true) {
+    $formTitle = "Edit blog entry";
+    $record['author'] = htmlspecialchars($editEntry['author']);
+    $record['title'] = htmlspecialchars($editEntry['title']);
+    $record['content'] = htmlspecialchars($editEntry['content']);
+} else {
+    $formTitle = "Add new blog entry";
+    $record['author'] = '';
+    $record['title'] = '';
+    $record['content'] = '';
+}
+?>
+
 <section id="blogForm">
-    <h2>Add new blog entry</h2>
+    <h2><?=$formTitle;?></h2>
 
     <!-- Form using POST -->
     <form action="/<?=$formProcessingPage;?>" method="post">
+    <?php if ($editMode): ?>
+            <input type="hidden" id="editId" name="editId" value="<?=htmlspecialchars($editEntry['ID']);?>">
+        <?php endif; ?>
+
         <p></p>
             <label for="blogAuthor">Author</label><br>
-            <input type="text" name="blogAuthor" id="blogAuthor" placeholder="Enter author" maxlength="125">
+            <input type="text" name="blogAuthor" id="blogAuthor" placeholder="Enter author" maxlength="125" value="<?= $editMode ? htmlspecialchars($editEntry['author']) : '' ?>">
         </p>
         <p>
             <label for="blogTitle">Page title:<br>
-                <input type="text" name="blogTitle" id="blogTitle" placeholder="Enter page title" maxlength="125">
+                <input type="text" name="blogTitle" id="blogTitle" placeholder="Enter page title" maxlength="125" value="<?= $editMode ? htmlspecialchars($editEntry['title']) : '' ?>">
             </label>
         </p>
         <p></p>
             <label for="blogContent">Page content:<br>
-                <textarea name="blogContent" id="blogContent" placeholder="Enter blog content"></textarea>
+                <textarea name="blogContent" id="blogContent" placeholder="Enter blog content"><?= $editMode ? htmlspecialchars($editEntry['content']) : '' ?></textarea>
             </label>
         </p>
-        <input class="submit" type="submit" value="Post blog">
+        <input class="submit" type="submit" value="<?= $editMode ? 'Update blog' : 'Post blog' ?>">
     </form>
 </section>
 
 <?php endif; ?>
 
+
+<script type="text/javascript" language="javascript" charset="utf-8">
+document.addEventListener('DOMContentLoaded', function() {
+    const profileSection = document.getElementById('profile');
+    const toggleButton = document.getElementById('toggleProfile');
+
+    toggleButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        profileSection.classList.toggle('hidden');
+        toggleButton.textContent = profileSection.classList.contains('hidden') ? 'Show console log' : 'Hide console log';
+    });
+});
+</script>
 </body>
 </html>
