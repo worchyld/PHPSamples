@@ -77,7 +77,7 @@ if ( $request_method == 'GET' ) {
 </section>
 
 <section id="profile">
-    <p><a href="#" id="toggleConsole">Show console log</a></p>
+    <p><a href="#" id="toggleConsole">Hide console log</a></p>
     <?php
     if ($loggedIn == true) {
         echo "<h2>Profile</h2>";

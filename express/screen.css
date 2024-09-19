@@ -17,9 +17,14 @@ textarea {
     font-weight:900;
     padding:1em;
 }
+section#debugConsole {
+    border: 1px solid red;
+    padding: 1rem;
+    display: hidden;
+}
 section#profile {
     border: 1px solid blue;
-    padding: 1rem;
+    padding: 1rem;    
 }
 section#blogEntries {
     margin-top:1rem;
