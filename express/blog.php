@@ -35,6 +35,7 @@ if (isset($_SESSION['username'])) {
 $rows = getBlogEntries();
 $editMode = false;
 $editEntry = null;
+$showConsole = false; // for debugging purposes
 
 $request_method = mb_strtoupper(sanitizeInput($_SERVER['REQUEST_METHOD']));
 
@@ -60,26 +61,33 @@ if ( $request_method == 'GET' ) {
 
 <main>
 
-<?php /*
-<section id="debugConsole" class="toggle">
-    <?php
-    print "<h3>DEBUG:</h3>";
-    $cookieParams = session_get_cookie_params();
-    print "<p>Session ID: " . session_id() . "</p>";
-    print "<p>Session Name: " . session_name() . "</p>";
-    print "<p>Session Save Path: " . session_save_path() . "</p>";
-    print "<p>Session Status: " . session_status() . "</p>";
-    print "<p>Session Started: " . (isset($_SESSION['username']) ? 'Yes' : 'No') . "</p>";
-    print "<p>Session Data: " . json_encode($_SESSION) . "</p>";
-    print "<p>Cookie Params: " . json_encode($cookieParams) . "</p>";
-
-    print ("<hr>");    
+<?php 
+// Debugging console
+// Note: Session variables were not being saved on my computer
+if ($showConsole):
     ?>
-</section>  */?>
+    <section id="debugConsole" class="toggle">
+        <?php
+        print "<h3>DEBUG:</h3>";
+        $cookieParams = session_get_cookie_params();
+        print "<p>Session ID: " . session_id() . "</p>";
+        print "<p>Session Name: " . session_name() . "</p>";
+        print "<p>Session Save Path: " . session_save_path() . "</p>";
+        print "<p>Session Status: " . session_status() . "</p>";
+        print "<p>Session Started: " . (isset($_SESSION['username']) ? 'Yes' : 'No') . "</p>";
+        print "<p>Session Data: " . json_encode($_SESSION) . "</p>";
+        print "<p>Cookie Params: " . json_encode($cookieParams) . "</p>";
+        print ("<hr>");
+        ?>
+    </section>
+    <?php
+endif;?>
 
 <section id="profile">
-    <?php // <p><a href="#" id="toggleConsole">Hide console log</a></p> ?>
     <?php
+    if ($showConsole):
+        print ("<p><a href=\"#\" id=\"toggleConsole\">Hide console log</a></p>");
+    endif;
     if ($loggedIn == true) {
         echo "<h2>Welcome back, " .htmlspecialchars($_SESSION['username']) . "!</h2>";
         echo "<p><a href=\"logout.php\">Logout</a></p>";
