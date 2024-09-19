@@ -60,6 +60,7 @@ if ( $request_method == 'GET' ) {
 
 <main>
 
+<?php /*
 <section id="debugConsole" class="toggle">
     <?php
     print "<h3>DEBUG:</h3>";
@@ -74,14 +75,13 @@ if ( $request_method == 'GET' ) {
 
     print ("<hr>");    
     ?>
-</section>
+</section>  */?>
 
 <section id="profile">
-    <p><a href="#" id="toggleConsole">Hide console log</a></p>
+    <?php // <p><a href="#" id="toggleConsole">Hide console log</a></p> ?>
     <?php
     if ($loggedIn == true) {
-        echo "<h2>Profile</h2>";
-        echo "<p>Welcome, " . htmlspecialchars($_SESSION['username']) . "!</p>";
+        echo "<h2>Welcome back, " .htmlspecialchars($_SESSION['username']) . "!</h2>";
         echo "<p><a href=\"logout.php\">Logout</a></p>";
     } else {
         echo "<p>You are not logged in</p>";
