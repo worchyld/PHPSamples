@@ -8,6 +8,9 @@ $formProcessingPage = "process-blog.php";
 include_once("functions.inc.php");
 set_error_handler("logError");
 
+$loggedIn = true;
+$username = "";
+
 if (!is_session_started()) {
     session_set_cookie_params([
         'lifetime' => 3600,
@@ -21,7 +24,11 @@ if (!is_session_started()) {
 }
 
 if (isset($_SESSION['username'])) {
-    // logged in?
+    // logged in?)
+    $username = sanitizeInput($_SESSION['username']);
+    if (isAcceptedUsername($username)) {
+        $loggedIn = true;
+    }
 }
 
 // Are we editing the blog entry?
@@ -53,19 +60,8 @@ if ( $request_method == 'GET' ) {
 
 <main>
 
-<section id="profile" class="toggle">
+<section id="debugConsole" class="toggle">
     <?php
-    $showBlog = true;
-    if (isset($_SESSION['username'])) {
-        echo "<h2>Profile</h2>";
-        echo "<p>Welcome, " . htmlspecialchars($_SESSION['username']) . "!</p>";
-        echo "<p><a href=\"logout.php\">Logout</a></p>";
-    } else {
-        //$showBlog = false;
-        echo "<p>You are not logged in</p>";
-        echo "<p><a href=\"login.php\">Login</a></p>";
-    }
-    
     print "<h3>DEBUG:</h3>";
     $cookieParams = session_get_cookie_params();
     print "<p>Session ID: " . session_id() . "</p>";
@@ -78,10 +74,23 @@ if ( $request_method == 'GET' ) {
 
     print ("<hr>");    
     ?>
-    <p><a href="#" id="toggleProfile">Show console log</a></p>
 </section>
 
-<?php if ($showBlog == true): ?>
+<section id="profile">
+    <p><a href="#" id="toggleConsole">Show console log</a></p>
+    <?php
+    if ($loggedIn == true) {
+        echo "<h2>Profile</h2>";
+        echo "<p>Welcome, " . htmlspecialchars($_SESSION['username']) . "!</p>";
+        echo "<p><a href=\"logout.php\">Logout</a></p>";
+    } else {
+        echo "<p>You are not logged in</p>";
+        echo "<p><a href=\"login.php\">Login</a></p>";
+    }
+    ?>
+</section>
+
+<?php if ($loggedIn == true): ?>
 <section id="blogEntries">
     <h2>Blog entries</h2>
     <p>Total entries: <?=count($rows);?></p>
@@ -110,7 +119,6 @@ if ( $request_method == 'GET' ) {
         </ul>
         <?php
     endif; ?>
-    
 </section>
 
 <hr>
@@ -161,8 +169,8 @@ if ($editMode == true) {
 
 <script type="text/javascript" language="javascript" charset="utf-8">
 document.addEventListener('DOMContentLoaded', function() {
-    const profileSection = document.getElementById('profile');
-    const toggleButton = document.getElementById('toggleProfile');
+    const profileSection = document.getElementById('debugConsole');
+    const toggleButton = document.getElementById('toggleConsole');
 
     toggleButton.addEventListener('click', function(e) {
         e.preventDefault();

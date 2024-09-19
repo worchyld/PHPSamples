@@ -1,6 +1,11 @@
 <?php
 // Common functions
 
+// Yes, I know this is not good practice
+function isAcceptedUsername($username) {
+    return ((strtolower($username)) == "admin");
+}
+
 function logError($message) {
     if (is_array($message)) {
         $message = json_encode($message);
