@@ -1,0 +1,33 @@
+/**
+screen.css
+media: Screen
+*/
+body {
+    font: 14px/1.5rem Arial, Helvetica, sans-serif;
+}
+p { margin-bottom: 1rem; }
+:placeholder-shown, :-moz-placeholder, ::-moz-placeholder {
+    font: 14px/1.5rem Arial, Helvetica, sans-serif;
+}
+textarea {
+    min-width: 20%;
+    min-height: 10rem;
+}
+.submit {
+    font-weight:900;
+    padding:1em;
+}
+section#profile {
+    border: 1px solid blue;
+    padding: 1rem;
+}
+section#blogEntries {
+    margin-top:1rem;
+    border-top:1px solid #ccc;
+}
+.hidden {
+    display: none;
+}
+.blog-meta {
+    border-bottom:1px solid #eee;
+}

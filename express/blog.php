@@ -20,9 +20,12 @@ if (!is_session_started()) {
     session_start();
 }
 
-$rows = getBlogEntries();
+if (isset($_SESSION['username'])) {
+    // logged in?
+}
 
 // Are we editing the blog entry?
+$rows = getBlogEntries();
 $editMode = false;
 $editEntry = null;
 
@@ -39,41 +42,16 @@ if ( $request_method == 'GET' ) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-gb">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My blog entries</title>
-    <style type="text/css">
-        body {
-            font: 14px/1.5rem Arial, Helvetica, sans-serif;
-        }
-        p { margin-bottom: 1rem; }
-        :placeholder-shown, :-moz-placeholder, ::-moz-placeholder {
-            font: 14px/1.5rem Arial, Helvetica, sans-serif;
-        }
-        textarea {
-            min-width: 20%;
-            min-height: 10rem;
-        }
-        .submit {
-            font-weight:900;
-            padding:1em;
-        }
-        section#profile {
-            border: 1px solid blue;
-            padding: 1rem;
-        }
-        section#blogEntries {
-            margin-top:1rem;
-            border-top:1px solid #ccc;
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="screen.css" media="screen">
 </head>
 <body>
+
+<main>
 
 <section id="profile" class="toggle">
     <?php
@@ -100,9 +78,8 @@ if ( $request_method == 'GET' ) {
 
     print ("<hr>");    
     ?>
+    <p><a href="#" id="toggleProfile">Show console log</a></p>
 </section>
-
-<p><a href="#" id="toggleProfile">Show console log</a></p>
 
 <?php if ($showBlog == true): ?>
 <section id="blogEntries">
@@ -194,5 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+</main>
 </body>
 </html>

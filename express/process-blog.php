@@ -2,6 +2,8 @@
 // Turn off output buffering
 ob_start();
 header('Content-Type: text/php; charset=UTF-8');
+header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1 From php.net
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past From php.net
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);

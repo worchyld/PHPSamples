@@ -44,13 +44,6 @@ try {
         $_SESSION['username'] = $username;
         session_write_close();
         logError("Session set: " . json_encode($_SESSION)); // Log session data
-        
-        echo "Session ID: " . session_id() . "<br>";
-        var_dump($_SESSION);
-
-        print "<p>Cookie params:</p>";
-        $cookieParams = session_get_cookie_params();
-
 
         print "<p>Session ID: " . session_id() . "</p>";
         print "<p>Session Name: " . session_name() . "</p>";
@@ -58,13 +51,12 @@ try {
         print "<p>Session Status: " . session_status() . "</p>";
         print "<p>Session Started: " . (isset($_SESSION['username']) ? 'Yes' : 'No') . "</p>";
         print "<p>Session Data: " . json_encode($_SESSION) . "</p>";
-        print "<p>Cookie Params: " . json_encode($cookieParams) . "</p>";
-
+        print "<p>Cookie Params: " . json_encode(session_get_cookie_params()) . "</p>";
         print ("<hr>");
-        print "<a href='blog.php'>Blog</a>";
+        print "<a href='blog.php'>Go to Blog</a>";
         
         //header('Location: blog.php');
-        exit();
+        //exit();
     }
 } catch (Exception $e) {
     header('Location: login.php');
