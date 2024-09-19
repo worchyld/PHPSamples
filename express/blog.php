@@ -105,7 +105,7 @@ if ( $request_method == 'GET' ) {
                     <h3><?=htmlspecialchars($record['title']);?></h3>
                     <p class="blog-meta">
                         By <?=htmlspecialchars($record['author']);?> on 
-                        <?=(new DateTime($record['created_at']))->format('d-M-Y H:i:s');?>
+                        <?=(new DateTime($record['updated_at']))->format('d-M-Y H:i:s');?>
                     </p>
                     <p class="blog-excerpt"><?=htmlspecialchars(substr($record['content'], 0, 100));?>...</p>
                     <div class="blog-actions">
