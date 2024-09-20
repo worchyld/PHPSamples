@@ -4,7 +4,7 @@ media: Screen
 */
 body {
     font: 14px/1.5rem Arial, Helvetica, sans-serif;
-    margin:2rem;
+    margin:3rem;
 }
 p { margin-bottom: 1rem; }
 :placeholder-shown, :-moz-placeholder, ::-moz-placeholder {

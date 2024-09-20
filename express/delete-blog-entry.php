@@ -35,13 +35,15 @@ try {
     }
     logError($message);
 
-    header("Location: blog.php");
+    //header("Location:" . BASE_URL . "blog.php");
+    redirect();
     exit();
 
 } catch (Exception $e) {
     logError($e->getMessage());
     logError($e->getTraceAsString());
-    header("Location: blog.php");
+    //header("Location:" . BASE_URL . "blog.php");
+    redirect();
     exit();
 }
 ?>

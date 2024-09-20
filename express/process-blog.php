@@ -47,7 +47,8 @@ try {
     
     $url = "http://localhost:3000/";
     ob_clean();
-    header("Location: " . $url . "blog.php");
+    //header("Location: " . $url . "blog.php");
+    redirect();
     exit();
 }
 catch (exception $e) {
@@ -57,7 +58,8 @@ catch (exception $e) {
 
     $url = "http://localhost:3000/";
     ob_clean();
-    header("Location: " . $url . "blog.php");
+    //header("Location: " . $url . "blog.php");
+    redirect();
     exit();
 }
 ob_end_flush();

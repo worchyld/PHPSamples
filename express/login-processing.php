@@ -40,11 +40,10 @@ try {
     $password = $sanitizedInput['password'];
     
     if ($username == 'admin' && $password == 'admin') {
-        
+        /*
         $_SESSION['username'] = $username;
         session_write_close();
-        logError("Session set: " . json_encode($_SESSION)); // Log session data
-
+        logError("Session set: " . json_encode($_SESSION)); 
         print "<p>Session ID: " . session_id() . "</p>";
         print "<p>Session Name: " . session_name() . "</p>";
         print "<p>Session Save Path: " . session_save_path() . "</p>";
@@ -54,11 +53,13 @@ try {
         print "<p>Cookie Params: " . json_encode(session_get_cookie_params()) . "</p>";
         print ("<hr>");
         print "<a href='blog.php'>Go to Blog</a>";
-        
-        //header('Location: blog.php');
-        //exit();
+        */
+        //header("Location:" . BASE_URL . "blog.php");
+        redirect();
+        exit();
     }
 } catch (Exception $e) {
-    header('Location: login.php');
+   // header("Location:" . BASE_URL . "login.php");
+    redirect();
     exit();
 }

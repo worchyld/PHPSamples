@@ -64,7 +64,7 @@ if ( $request_method == 'GET' ) {
 <?php 
 // Debugging console
 // Note: Session variables were not being saved on my computer
-if ($showConsole):
+if ($showConsole == true):
     ?>
     <section id="debugConsole" class="toggle">
         <?php
@@ -77,6 +77,11 @@ if ($showConsole):
         print "<p>Session Started: " . (isset($_SESSION['username']) ? 'Yes' : 'No') . "</p>";
         print "<p>Session Data: " . json_encode($_SESSION) . "</p>";
         print "<p>Cookie Params: " . json_encode($cookieParams) . "</p>";
+        print "<p>BASE_URL: " . $base_url . "</p>";
+
+        print ("PDO Drivers: <br>");
+        print_r(PDO::getAvailableDrivers());
+
         print ("<hr>");
         ?>
     </section>
@@ -84,10 +89,11 @@ if ($showConsole):
 endif;?>
 
 <section id="profile">
-    <?php
+    <?php 
     if ($showConsole):
-        print ("<p><a href=\"#\" id=\"toggleConsole\">Hide console log</a></p>");
+    print ("<p><a href=\"#\" id=\"toggleConsole\">Hide console log</a></p>");
     endif;
+
     if ($loggedIn == true) {
         echo "<h2>Welcome back, " .htmlspecialchars($_SESSION['username']) . "!</h2>";
         echo "<p><a href=\"logout.php\">Logout</a></p>";
@@ -149,7 +155,7 @@ if ($editMode == true) {
     <h2><?=$formTitle;?></h2>
 
     <!-- Form using POST -->
-    <form action="/<?=$formProcessingPage;?>" method="post">
+    <form action="<?=$formProcessingPage;?>" method="post">
     <?php if ($editMode): ?>
             <input type="hidden" id="editId" name="editId" value="<?=htmlspecialchars($editEntry['ID']);?>">
         <?php endif; ?>
